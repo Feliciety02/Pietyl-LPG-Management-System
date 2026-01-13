@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
+     *
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -23,6 +25,8 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -30,53 +34,15 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    /**
-     * Helper methods for role checking (optional but useful)
-     */
-
-    public function isAdmin(): bool
+    protected function casts(): array
     {
-        return $this->hasRole('Owner Admin');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
-
-    public function isAccountant(): bool
-    {
-        return $this->hasRole('Accountant Bookkeeper');
-    }
-
-    public function isCashier(): bool
-    {
-        return $this->hasRole('Sales Cashier');
-    }
-
-    public function isInventory(): bool
-    {
-        return $this->hasRole('Inventory Stock Custodian');
-    }
-
-    public function isRider(): bool
-    {
-        return $this->hasRole('Delivery Rider Driver');
-    }
-
-    /**
-     * Future-ready relationships (safe to leave unused for now)
-     */
-
-    // public function employee()
-    // {
-    //     return $this->hasOne(Employee::class);
-    // }
-
-    // public function auditLogs()
-    // {
-    //     return $this->hasMany(AuditLog::class);
-    // }
 }
