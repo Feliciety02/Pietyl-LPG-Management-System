@@ -36,3 +36,20 @@
     @apply inline-flex items-center justify-center rounded-xl border border-phoenix px-4 py-2 text-phoenix font-semibold hover:bg-phoenix-light transition;
   }
 }
+
+@keyframes pietylGlowFloat {
+  0%   { transform: translate3d(0, 0, 0) scale(1); filter: blur(64px); opacity: 0.55; }
+  33%  { transform: translate3d(18px, -12px, 0) scale(1.06); filter: blur(72px); opacity: 0.70; }
+  66%  { transform: translate3d(-14px, 10px, 0) scale(0.98); filter: blur(60px); opacity: 0.60; }
+  100% { transform: translate3d(0, 0, 0) scale(1); filter: blur(64px); opacity: 0.55; }
+}
+
+@keyframes pietylGlowDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1.02); filter: blur(70px); opacity: 0.50; }
+  50%  { transform: translate3d(-20px, 14px, 0) scale(1.10); filter: blur(78px); opacity: 0.72; }
+  100% { transform: translate3d(0, 0, 0) scale(1.02); filter: blur(70px); opacity: 0.50; }
+}
+
+.pietyl-glow-1 { animation: pietylGlowFloat 11s ease-in-out infinite; }
+.pietyl-glow-2 { animation: pietylGlowDrift 14s ease-in-out infinite; }
+.pietyl-glow-3 { animation: pietylGlowFloat 16s ease-in-out infinite reverse; }
