@@ -134,7 +134,7 @@
                 <div class="mt-4 flex flex-wrap gap-2">
                     @role('Owner Admin')
                         <a class="rounded-xl bg-phoenix-teal text-white px-4 py-2 text-sm font-semibold hover:bg-phoenix-deep transition"
-                           href="{{ route('employees.index') }}">
+                           href="{{ route('admin.employees.index') }}"
                             Employees
                         </a>
                     @endrole

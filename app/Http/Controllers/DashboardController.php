@@ -8,26 +8,26 @@ class DashboardController extends Controller
 {
     public function admin(Request $request)
     {
-        return view('dashboards.admin');
+        return view('admin.dashboard');
     }
 
     public function accountant(Request $request)
     {
-        return view('dashboards.accountant');
+        return view('accountant.dashboard');
     }
 
     public function cashier(Request $request)
     {
-        return view('dashboards.cashier');
+        return view('cashier.dashboard');
     }
 
     public function inventory(Request $request)
     {
-        return view('dashboards.inventory');
+        return view('inventory_manager.dashboard');
     }
 
     public function delivery(Request $request)
     {
-        return view('dashboards.delivery');
+        return view('delivery_rider.dashboard');
     }
 }

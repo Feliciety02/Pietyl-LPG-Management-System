@@ -9,6 +9,8 @@
 
 <body class="min-h-screen bg-slate-50 text-slate-800">
     <div class="min-h-screen flex flex-col">
+
+        <!-- Top Header -->
         <header class="bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -27,9 +29,21 @@
             </div>
         </header>
 
-        <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-6">
-            {{ $slot }}
+        <!-- Main Layout -->
+        <main class="flex-1">
+            <div class="max-w-7xl mx-auto px-6 py-6">
+                <div class="lg:flex lg:gap-6">
+
+                    @include('layouts.sidebar')
+
+                    <div class="flex-1 min-w-0">
+                        {{ $slot }}
+                    </div>
+
+                </div>
+            </div>
         </main>
+
     </div>
 </body>
 </html>
