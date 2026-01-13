@@ -12,7 +12,7 @@ class UsersSeeder extends Seeder
     {
         // Owner Admin
         $admin = User::firstOrCreate(
-            ['email' => 'admin@pietyl.test'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Owner Admin',
                 'password' => Hash::make('password'),
@@ -23,7 +23,7 @@ class UsersSeeder extends Seeder
 
         // Accountant
         $accountant = User::firstOrCreate(
-            ['email' => 'accountant@pietyl.test'],
+            ['email' => 'accountant@gmail.com'],
             [
                 'name' => 'Accountant',
                 'password' => Hash::make('password'),
@@ -34,7 +34,7 @@ class UsersSeeder extends Seeder
 
         // Sales Cashier
         $cashier = User::firstOrCreate(
-            ['email' => 'cashier@pietyl.test'],
+            ['email' => 'cashier@gmail.com'],
             [
                 'name' => 'Sales Cashier',
                 'password' => Hash::make('password'),
@@ -45,7 +45,7 @@ class UsersSeeder extends Seeder
 
         // Inventory Custodian
         $inventory = User::firstOrCreate(
-            ['email' => 'inventory@pietyl.test'],
+            ['email' => 'inventory@gmail.com'],
             [
                 'name' => 'Inventory Custodian',
                 'password' => Hash::make('password'),
@@ -56,7 +56,7 @@ class UsersSeeder extends Seeder
 
         // Delivery Rider
         $rider = User::firstOrCreate(
-            ['email' => 'rider@pietyl.test'],
+            ['email' => 'rider@gmail.com'],
             [
                 'name' => 'Delivery Rider',
                 'password' => Hash::make('password'),
