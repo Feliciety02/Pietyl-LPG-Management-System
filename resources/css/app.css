@@ -2,9 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
+  :root {
+    --phoenix: 24 168 166;
+    --phoenix-dark: 15 127 125;
+    --phoenix-light: 230 246 246;
+    --phoenix-ink: 11 47 46;
+  }
+
   body {
-    @apply bg-phoenix-white text-phoenix-dark;
+    @apply bg-slate-50 text-slate-800;
+  }
+}
+
+@layer components {
+  .phoenix-card {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200;
+  }
+
+  .phoenix-input {
+    @apply w-full rounded-xl border-slate-300 focus:border-phoenix focus:ring-phoenix;
+  }
+
+  .phoenix-link {
+    @apply font-semibold text-phoenix hover:text-phoenix-dark transition;
+  }
+
+  .phoenix-btn {
+    @apply inline-flex items-center justify-center rounded-xl bg-phoenix px-4 py-2 text-white font-semibold shadow-sm hover:bg-phoenix-dark transition;
+  }
+
+  .phoenix-btn-outline {
+    @apply inline-flex items-center justify-center rounded-xl border border-phoenix px-4 py-2 text-phoenix font-semibold hover:bg-phoenix-light transition;
   }
 }

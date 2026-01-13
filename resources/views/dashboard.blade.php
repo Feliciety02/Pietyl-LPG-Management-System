@@ -1,30 +1,17 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto py-6 space-y-6">
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
-        <div>
-            <div class="text-2xl font-extrabold">Dashboard</div>
-            <div class="text-sm text-slate-500 mt-1">
-                Welcome back, {{ auth()->user()->name }}.
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    {{ __("You're logged in!") }}
+                </div>
             </div>
         </div>
-
-        @php
-            $role = auth()->user()->getRoleNames()->first();
-        @endphp
-
-        @if($role === 'Owner Admin')
-            @include('dashboard.partials.owner-admin')
-        @elseif($role === 'Inventory Stock Custodian')
-            @include('dashboard.partials.inventory')
-        @elseif($role === 'Sales Cashier')
-            @include('dashboard.partials.cashier')
-        @elseif($role === 'Accountant Bookkeeper')
-            @include('dashboard.partials.accountant')
-        @elseif($role === 'Delivery Rider Driver')
-            @include('dashboard.partials.rider')
-        @else
-            @include('dashboard.partials.no-role')
-        @endif
-
     </div>
 </x-app-layout>

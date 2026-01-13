@@ -1,26 +1,53 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Public Pages
+|--------------------------------------------------------------------------
+*/
+
+// Landing page (marketing + login)
 Route::get('/', function () {
-    return redirect('/dashboard');
+    return view('landing');
+})->name('landing');
+
+// Attendance entry page (QR / future expansion)
+Route::get('/attendance', function () {
+    return view('attendance.index');
+})->name('attendance');
+
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated User Pages
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
 
-    Route::view('/dashboard/admin', 'dashboards.admin')
-        ->middleware('role:Owner Admin');
+/*
+|--------------------------------------------------------------------------
+| Auth Routes (Login, Logout, Forgot Password only)
+|--------------------------------------------------------------------------
+*/
 
-    Route::view('/dashboard/accountant', 'dashboards.accountant')
-        ->middleware('role:Accountant Bookkeeper');
-
-    Route::view('/dashboard/cashier', 'dashboards.cashier')
-        ->middleware('role:Sales Cashier');
-
-    Route::view('/dashboard/inventory', 'dashboards.inventory')
-        ->middleware('role:Inventory Stock Custodian');
-
-    Route::view('/dashboard/rider', 'dashboards.rider')
-        ->middleware('role:Delivery Rider Driver');
-
-});
+require __DIR__ . '/auth.php';
