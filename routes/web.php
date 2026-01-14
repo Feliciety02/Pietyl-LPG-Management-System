@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,7 +12,6 @@ use App\Http\Controllers\DashboardController;
 */
 
 Route::view('/', 'landing')->name('landing');
-
 Route::view('/attendance', 'attendance')->name('attendance');
 
 /*
@@ -66,37 +67,38 @@ Route::middleware('auth')->group(function () {
 | Each role owns its own area. Dashboards are entry points.
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'role:Owner Admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        // Admin dashboard
         Route::get('/dashboard', [DashboardController::class, 'admin'])
             ->name('dashboard');
 
-        // Employees (admin-only)
-        Route::get('/employees', fn () => view('admin.employee'))
+        // Employees CRUD (admin only)
+        
+        Route::get('/employees', [EmployeeController::class, 'index'])
             ->name('employees.index');
 
+        Route::resource('employees', EmployeeController::class)
+            ->except(['index'])
+            ->names('employees');
 
-        // Users (future module placeholder)
+        // Users (placeholder)
         Route::view('/users', 'admin.users.index')
             ->name('users.index');
 
-        // Settings (future module placeholder)
+        // Settings (placeholder)
         Route::view('/settings', 'admin.settings.index')
             ->name('settings.index');
     });
-
 
 Route::middleware(['auth', 'role:Accountant Bookkeeper'])
     ->prefix('accountant')
     ->name('accountant.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'accountant'])->name('dashboard');
-
-        // Accountant modules (placeholders)
         Route::view('/reports', 'accountant.reports.index')->name('reports.index');
     });
 
@@ -105,8 +107,6 @@ Route::middleware(['auth', 'role:Sales Cashier'])
     ->name('cashier.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'cashier'])->name('dashboard');
-
-        // Cashier modules (placeholders)
         Route::view('/sales', 'cashier.sales.index')->name('sales.index');
         Route::view('/customers', 'cashier.customers.index')->name('customers.index');
     });
@@ -116,8 +116,6 @@ Route::middleware(['auth', 'role:Inventory Stock Custodian|Owner Admin'])
     ->name('inventory.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'inventory'])->name('dashboard');
-
-        // Inventory owned modules (placeholders for now)
         Route::view('/items', 'inventory.items.index')->name('items.index');
         Route::view('/suppliers', 'inventory.suppliers.index')->name('suppliers.index');
         Route::view('/stock-movements', 'inventory.stock-movements.index')->name('stock-movements.index');
@@ -128,18 +126,12 @@ Route::middleware(['auth', 'role:Delivery Rider Driver'])
     ->name('delivery.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'delivery'])->name('dashboard');
-
-        // Delivery modules (placeholders)
         Route::view('/deliveries', 'delivery.deliveries.index')->name('deliveries.index');
     });
 
 /*
 |--------------------------------------------------------------------------
 | LEGACY SHORTCUTS (OPTIONAL)
-|--------------------------------------------------------------------------
-| These avoid "Route not defined" errors if old templates still call
-| route('items.index') or route('suppliers.index').
-| Remove these once you update all links to inventory.items.index, etc.
 |--------------------------------------------------------------------------
 */
 

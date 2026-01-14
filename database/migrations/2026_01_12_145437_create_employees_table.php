@@ -7,16 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::create('employees', function (Blueprint $table) {
-            $table->id();
-            $table->string('full_name');
-            $table->string('role_name');
-            $table->boolean('is_active')->default(true);
-            $table->string('pin_hash');
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('employees', function (Blueprint $table) {
+        $table->id();
+        $table->string('full_name');
+        $table->string('email')->nullable()->unique();
+        $table->string('role_name'); // store role label for now
+        $table->string('pin_hash');  // store hashed pin
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+    });
+}
+
 
     public function down(): void
     {

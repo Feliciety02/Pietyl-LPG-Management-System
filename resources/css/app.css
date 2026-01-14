@@ -10,6 +10,9 @@
     --phoenix-ink: 11 47 46;
   }
 
+  [x-cloak] { display: none !important; }
+
+
   body {
     @apply bg-slate-50 text-slate-800;
   }
