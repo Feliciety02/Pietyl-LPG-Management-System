@@ -37,19 +37,46 @@
   }
 }
 
-@keyframes pietylGlowFloat {
-  0%   { transform: translate3d(0, 0, 0) scale(1); filter: blur(64px); opacity: 0.55; }
-  33%  { transform: translate3d(18px, -12px, 0) scale(1.06); filter: blur(72px); opacity: 0.70; }
-  66%  { transform: translate3d(-14px, 10px, 0) scale(0.98); filter: blur(60px); opacity: 0.60; }
-  100% { transform: translate3d(0, 0, 0) scale(1); filter: blur(64px); opacity: 0.55; }
+/* background slow drift */
+.pietyl-bg-float {
+  animation: pietylBgFloat 18s ease-in-out infinite;
+}
+@keyframes pietylBgFloat {
+  0%, 100% { transform: scale(1.02) translate3d(0, 0, 0); }
+  50% { transform: scale(1.05) translate3d(-8px, 6px, 0); }
 }
 
-@keyframes pietylGlowDrift {
-  0%   { transform: translate3d(0, 0, 0) scale(1.02); filter: blur(70px); opacity: 0.50; }
-  50%  { transform: translate3d(-20px, 14px, 0) scale(1.10); filter: blur(78px); opacity: 0.72; }
-  100% { transform: translate3d(0, 0, 0) scale(1.02); filter: blur(70px); opacity: 0.50; }
+/* Aurora base */
+.pietyl-aurora {
+  will-change: transform, opacity;
+  filter: blur(80px);
 }
 
-.pietyl-glow-1 { animation: pietylGlowFloat 11s ease-in-out infinite; }
-.pietyl-glow-2 { animation: pietylGlowDrift 14s ease-in-out infinite; }
-.pietyl-glow-3 { animation: pietylGlowFloat 16s ease-in-out infinite reverse; }
+/* Each aurora has its own color mix */
+.pietyl-aurora-1 { background: radial-gradient(circle at 30% 30%, rgba(20,184,166,.45), transparent 60%); animation: auroraA 12s ease-in-out infinite; }
+.pietyl-aurora-2 { background: radial-gradient(circle at 60% 40%, rgba(34,211,238,.35), transparent 62%); animation: auroraB 14s ease-in-out infinite; }
+.pietyl-aurora-3 { background: radial-gradient(circle at 50% 50%, rgba(13,148,136,.38), transparent 65%); animation: auroraC 16s ease-in-out infinite; }
+.pietyl-aurora-4 { background: radial-gradient(circle at 40% 60%, rgba(94,234,212,.30), transparent 62%); animation: auroraD 18s ease-in-out infinite; }
+.pietyl-aurora-5 { background: radial-gradient(circle at 45% 40%, rgba(20,184,166,.28), transparent 64%); animation: auroraE 20s ease-in-out infinite; }
+
+/* Modern drift animations, infinite */
+@keyframes auroraA {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .95; }
+  50% { transform: translate3d(70px, 40px, 0) scale(1.12); opacity: .65; }
+}
+@keyframes auroraB {
+  0%, 100% { transform: translate3d(0,0,0) scale(1.05); opacity: .8; }
+  50% { transform: translate3d(-60px, 55px, 0) scale(1.18); opacity: .55; }
+}
+@keyframes auroraC {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .75; }
+  50% { transform: translate3d(30px, -70px, 0) scale(1.22); opacity: .5; }
+}
+@keyframes auroraD {
+  0%, 100% { transform: translate3d(0,0,0) scale(1.08); opacity: .7; }
+  50% { transform: translate3d(-40px, -35px, 0) scale(1.2); opacity: .45; }
+}
+@keyframes auroraE {
+  0%, 100% { transform: translate3d(0,0,0) scale(1.02); opacity: .7; }
+  50% { transform: translate3d(-75px, -30px, 0) scale(1.16); opacity: .5; }
+}
