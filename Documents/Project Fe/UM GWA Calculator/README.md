@@ -10,7 +10,7 @@ A Chrome extension that calculates your GWA directly on the **UM Student Portal*
 - **Transparent exclusions** - See which entries were not counted and why.
 - **Copy and recalculate** - Copy the current GWA or refresh the calculation in one click.
 - **Private by design** - Grades are processed locally and never leave the browser.
-- **Original branding** - Features the GWA GAH? app icon and Feanne creator mark.
+- **Unified original branding** - Uses the GWA GAH? icon's charcoal and electric-blue palette across the interface and Feanne creator mark.
 
 ## Download and install
 

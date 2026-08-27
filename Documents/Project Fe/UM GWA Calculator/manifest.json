@@ -14,7 +14,7 @@
     {
       "resources": [
         "icons/icon128.png",
-        "icons/feanne-logo.webp"
+        "icons/feanne-logo-blue.png"
       ],
       "matches": [
         "https://student.umindanao.edu.ph/*"

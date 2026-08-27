@@ -202,7 +202,7 @@
       <div class="um-creator" aria-label="Created by Feanne">
         <span>Created by</span>
         <div>
-          <img src="${assetUrl("icons/feanne-logo.webp")}" alt="Feanne logo">
+          <img src="${assetUrl("icons/feanne-logo-blue.png")}" alt="Feanne logo">
           <strong>Feanne</strong>
         </div>
       </div>`
