@@ -203,7 +203,7 @@
         <span>Created by</span>
         <div>
           <img src="${assetUrl("icons/feanne-logo-blue.png")}" alt="Feanne logo">
-          <strong>Feanne</strong>
+          <a href="https://github.com/Feliciety02" target="_blank" rel="noopener noreferrer"><strong>Feanne</strong></a>
         </div>
       </div>`
     );
