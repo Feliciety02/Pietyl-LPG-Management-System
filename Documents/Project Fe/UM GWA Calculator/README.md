@@ -6,6 +6,7 @@ A Chrome extension that calculates your GWA directly on the **UM Student Portal*
 
 - **Automatic grade-scale detection** - Uses the grades already in the student's permanent record; there is no manual system selector.
 - **Academic snapshot** - See the calculated GWA, academic standing, total units, counted courses, and semester count at a glance.
+- **Animated calculations** - The speedometer, GWA, totals, and semester results animate to the student's refreshed values.
 - **Semester performance** - Review each term's GWA, courses, and units in compact cards.
 - **Transparent exclusions** - See which entries were not counted and why.
 - **Copy and recalculate** - Copy the current GWA or refresh the calculation in one click.

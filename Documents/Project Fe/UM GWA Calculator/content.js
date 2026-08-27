@@ -154,6 +154,11 @@
     return Number.isFinite(value) ? value.toFixed(digits) : "--";
   }
 
+  function countAttrs(value, digits, from = 0, suffix = "") {
+    if (!Number.isFinite(value)) return "";
+    return `data-count-to="${value}" data-count-from="${from}" data-count-digits="${digits}" data-count-suffix="${escapeHtml(suffix)}"`;
+  }
+
   function getStanding(gwa, scale) {
     if (!Number.isFinite(gwa)) return { title: "No data yet", subtitle: "No valid grades found" };
     if (scale === "legacy") {
@@ -172,6 +177,110 @@
     if (gwa >= 1.5) return { title: "Player", subtitle: "Keep progressing" };
     if (gwa > 1) return { title: "Rookie", subtitle: "Room to improve" };
     return { title: "Keep going", subtitle: "Your next term is a fresh start" };
+  }
+
+  function getStandingRange(title, scale) {
+    const ranges = scale === "legacy"
+      ? {
+          Legend: "1.00 - 1.50",
+          Master: "1.51 - 2.00",
+          Scholar: "2.01 - 2.50",
+          Achiever: "2.51 - 3.00",
+          Player: "3.01 - 3.50",
+          Rookie: "3.51 - 4.00",
+          "Keep going": "4.01 - 5.00"
+        }
+      : {
+          Legend: "3.50 - 4.00",
+          Master: "3.00 - 3.49",
+          Scholar: "2.50 - 2.99",
+          Achiever: "2.00 - 2.49",
+          Player: "1.50 - 1.99",
+          Rookie: "1.01 - 1.49",
+          "Keep going": "1.00"
+        };
+    return ranges[title] || "No range yet";
+  }
+
+  function buildGauge(gwa, scale) {
+    const minimum = 1;
+    const maximum = scale === "legacy" ? 5 : 4;
+    const safeGwa = Number.isFinite(gwa) ? gwa : minimum;
+    const position = Math.max(0, Math.min(1, (safeGwa - minimum) / (maximum - minimum)));
+    const needleAngle = position * 180;
+    const segmentStart = Math.max(0, position * 100 - 8);
+    const tickValues = Array.from({ length: maximum }, (_, index) => index + 1);
+    const tickRadius = 140;
+
+    const ticks = tickValues.map((value) => {
+      const tickPosition = (value - minimum) / (maximum - minimum);
+      const tickAngle = Math.PI - tickPosition * Math.PI;
+      const x = 160 + tickRadius * Math.cos(tickAngle);
+      const y = 154 - tickRadius * Math.sin(tickAngle);
+      return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${value.toFixed(1)}</text>`;
+    }).join("");
+
+    return `<div class="um-gauge" aria-label="GWA position ${fmt(gwa)} on a ${minimum.toFixed(1)} to ${maximum.toFixed(1)} scale">
+      <svg viewBox="0 0 320 190" role="img" aria-hidden="true">
+        <path class="um-gauge-track" pathLength="100" d="M 45 150 A 115 115 0 0 1 275 150"></path>
+        <path class="um-gauge-active" style="--um-gauge-offset:-${segmentStart.toFixed(2)}" pathLength="100" stroke-dasharray="16 100" d="M 45 150 A 115 115 0 0 1 275 150"></path>
+        <g class="um-gauge-ticks">${ticks}</g>
+        <g class="um-gauge-needle-group" style="--um-gauge-angle:${needleAngle.toFixed(2)}deg">
+          <line class="um-gauge-needle" x1="160" y1="150" x2="52" y2="150"></line>
+          <circle class="um-gauge-marker" cx="52" cy="150" r="8"></circle>
+          <circle class="um-gauge-marker-core" cx="52" cy="150" r="3"></circle>
+        </g>
+        <text class="um-gauge-caption" x="160" y="112" text-anchor="middle">YOUR GWA</text>
+        <text class="um-gauge-value" ${countAttrs(gwa, 2, 1)} x="160" y="139" text-anchor="middle">${fmt(gwa)}</text>
+      </svg>
+      <p>Closer to ${scale === "legacy" ? "1.0" : maximum.toFixed(1)} is better</p>
+    </div>`;
+  }
+
+  function statIcon(type) {
+    const paths = {
+      courses: `<path d="M12 3 3.5 7.5 12 12l8.5-4.5L12 3Z"></path><path d="M5.5 9v7.2L12 20l6.5-3.8V9"></path>`,
+      units: `<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"></path><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"></path>`,
+      semesters: `<rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path><path d="M7 14h2M11 14h2M15 14h2M7 18h2M11 18h2"></path>`
+    };
+    return `<span class="um-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${paths[type]}</svg></span>`;
+  }
+
+  function animateNumbers(panel) {
+    const numbers = [...panel.querySelectorAll("[data-count-to]")];
+    if (!numbers.length) return;
+
+    function renderValue(node, value) {
+      const digits = Number(node.dataset.countDigits || 0);
+      const suffix = node.dataset.countSuffix || "";
+      node.textContent = `${value.toFixed(digits)}${suffix}`;
+    }
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      numbers.forEach((node) => renderValue(node, Number(node.dataset.countTo)));
+      return;
+    }
+
+    const duration = 1450;
+    const startTime = performance.now();
+    numbers.forEach((node) => {
+      renderValue(node, Number(node.dataset.countFrom || 0));
+      node.classList.add("um-number-animating");
+    });
+
+    function update(now) {
+      const elapsed = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - elapsed, 3);
+      numbers.forEach((node) => {
+        const from = Number(node.dataset.countFrom || 0);
+        const target = Number(node.dataset.countTo);
+        renderValue(node, from + (target - from) * eased);
+      });
+      if (elapsed < 1) requestAnimationFrame(update);
+      else numbers.forEach((node) => node.classList.remove("um-number-animating"));
+    }
+
+    requestAnimationFrame(update);
   }
 
   function el(tag, className, html) {
@@ -195,7 +304,7 @@
         <img class="um-app-icon" src="${assetUrl("icons/icon128.png")}" alt="" aria-hidden="true">
         <div>
           <p class="um-eyebrow">Your academic companion</p>
-          <h2><span>GWA</span> GAH?</h2>
+          <h2><span>GWA</span> GAH?<i class="um-title-rays" aria-hidden="true"><b></b><b></b><b></b></i></h2>
           <p class="um-intro">Your permanent record, made easier to understand.</p>
         </div>
       </div>
@@ -207,15 +316,42 @@
         </div>
       </div>`
     );
-    const hero = el("div", "um-hero", `<div class="um-hero-copy"><span class="um-hero-label">General weighted average</span><strong class="um-gwa">${fmt(result.gwa)}</strong><span class="um-formula">${fmt(result.weightedPoints, 2)} points / ${fmt(result.totalUnits, 1)} units</span></div><div class="um-standing"><span>Academic standing</span><strong>${escapeHtml(standing.title)}</strong><small>${escapeHtml(standing.subtitle)}</small></div>`);
-    const stats = el("div", "um-stats", `<article class="um-stat"><strong>${result.included.length}</strong><span>Courses counted</span></article><article class="um-stat"><strong>${fmt(result.totalUnits, 1)}</strong><span>Total units</span></article><article class="um-stat"><strong>${result.terms.length}</strong><span>Semesters</span></article>`);
+    const overview = el("div", "um-overview");
+    const hero = el(
+      "div",
+      "um-hero",
+      `<div class="um-hero-watermark" aria-hidden="true"><span>G</span><span>G</span><span>?</span><span>=</span></div>
+       <div class="um-hero-copy">
+         <span class="um-hero-label">General weighted average</span>
+         <strong class="um-gwa" ${countAttrs(result.gwa, 2, 1)}>${fmt(result.gwa)}</strong>
+         <span class="um-formula"><b ${countAttrs(result.weightedPoints, 2)}>${fmt(result.weightedPoints, 2)}</b> weighted points&nbsp; / &nbsp;<b ${countAttrs(result.totalUnits, 1)}>${fmt(result.totalUnits, 1)}</b> units</span>
+       </div>
+       ${buildGauge(result.gwa, result.scale)}`
+    );
+    const standingCard = el(
+      "article",
+      "um-standing-card",
+      `<div class="um-standing-rings" aria-hidden="true"></div>
+       <div class="um-trophy" aria-hidden="true">
+         <svg viewBox="0 0 24 24"><path d="M8 4h8v3.5c0 3-1.8 5.5-4 5.5s-4-2.5-4-5.5V4Z"></path><path d="M8 6H5v1.5c0 2 1.2 3.5 3.3 3.8M16 6h3v1.5c0 2-1.2 3.5-3.3 3.8M12 13v4M8.5 21h7M10 17h4v4"></path></svg>
+         <span>&#9733;</span>
+       </div>
+       <span>Academic standing</span>
+       <strong>${escapeHtml(standing.title)}</strong>
+       <b>${escapeHtml(getStandingRange(standing.title, result.scale))}</b>
+       <small>${escapeHtml(standing.subtitle)}</small>
+       <i aria-hidden="true"></i>`
+    );
+    overview.append(hero, standingCard);
+
+    const stats = el("div", "um-stats", `<article class="um-stat">${statIcon("courses")}<div><strong ${countAttrs(result.included.length, 0)}>${result.included.length}</strong><span>Courses counted</span></div></article><article class="um-stat">${statIcon("units")}<div><strong ${countAttrs(result.totalUnits, 1)}>${fmt(result.totalUnits, 1)}</strong><span>Total units</span></div></article><article class="um-stat">${statIcon("semesters")}<div><strong ${countAttrs(result.terms.length, 0)}>${result.terms.length}</strong><span>Semesters</span></div></article>`);
 
     const semesterSection = el("section", "um-section");
     semesterSection.innerHTML = `<div class="um-section-heading"><div><span class="um-section-kicker">History</span><h3>Semester performance</h3></div><span>${result.terms.length} total</span></div>`;
     const termList = el("div", "um-term-list");
     if (result.terms.length) {
       result.terms.forEach((term) => {
-        termList.appendChild(el("article", "um-term-card", `<p>${escapeHtml(term.term)}</p><strong>${fmt(term.gwa)}</strong><div><span>${term.courses} courses</span><span>${fmt(term.units, 1)} units</span></div>`));
+        termList.appendChild(el("article", "um-term-card", `<p>${escapeHtml(term.term)}</p><strong ${countAttrs(term.gwa, 2, 1)}>${fmt(term.gwa)}</strong><div><span ${countAttrs(term.courses, 0, 0, " courses")}>${term.courses} courses</span><span ${countAttrs(term.units, 1, 0, " units")}>${fmt(term.units, 1)} units</span></div>`));
       });
     } else {
       termList.appendChild(el("p", "um-empty", "No semester results are available yet."));
@@ -224,7 +360,13 @@
 
     const exclusions = el("details", "um-details");
     const excludedLabel = result.excluded.length === 1 ? "1 entry" : `${result.excluded.length} entries`;
-    exclusions.innerHTML = `<summary><span><small>Review</small>Not included in GWA</span><b>${excludedLabel}</b></summary>`;
+    exclusions.innerHTML = `<summary>
+      <span class="um-exclusion-heading">
+        <i aria-hidden="true">i</i>
+        <span><strong>Not included in GWA</strong><small>These subjects are excluded from the GWA computation.</small></span>
+      </span>
+      <b>${excludedLabel}</b>
+    </summary>`;
     const exclusionBody = el("div", "um-details-body");
     if (result.excluded.length) {
       const list = el("ul", "um-excluded-list");
@@ -238,27 +380,28 @@
     exclusions.appendChild(exclusionBody);
 
     const footer = el("footer", "um-footer");
-    const note = el("p", "um-note", "Calculated locally from your permanent record. This is a personal estimate, not an official university record.");
+    const note = el("div", "um-note", `<span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"></path><path d="m9 12 2 2 4-4"></path></svg></span><p>Calculated locally from your permanent record.<br>This is a personal estimate, not an official university record.</p>`);
     const actions = el("div", "um-actions");
-    const copyButton = el("button", "um-button um-button-secondary", "Copy GWA");
+    const copyButton = el("button", "um-button um-button-secondary", `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="12" height="16" rx="2"></rect><path d="M9 5V3h6v2M9 9h6"></path></svg><span>Copy GWA</span>`);
     copyButton.type = "button";
     copyButton.disabled = !Number.isFinite(result.gwa);
     copyButton.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(fmt(result.gwa));
-        copyButton.textContent = "Copied";
-        setTimeout(() => { copyButton.textContent = "Copy GWA"; }, 1200);
-      } catch { copyButton.textContent = "Copy failed"; }
+        copyButton.querySelector("span").textContent = "Copied";
+        setTimeout(() => { copyButton.querySelector("span").textContent = "Copy GWA"; }, 1200);
+      } catch { copyButton.querySelector("span").textContent = "Copy failed"; }
     });
-    const recalculateButton = el("button", "um-button um-button-primary", "Recalculate");
+    const recalculateButton = el("button", "um-button um-button-primary", `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5"></path><path d="M19 12a7 7 0 1 1-2-5"></path></svg><span>Recalculate</span>`);
     recalculateButton.type = "button";
     recalculateButton.addEventListener("click", renderCalculator);
     actions.append(copyButton, recalculateButton);
     footer.append(note, actions);
 
-    panel.append(header, hero, stats, semesterSection, exclusions, footer);
+    panel.append(header, overview, stats, semesterSection, exclusions, footer);
     const tableContainer = table.closest(".card") || table.parentElement;
     tableContainer.parentElement.insertBefore(panel, tableContainer);
+    animateNumbers(panel);
   }
 
   function renderCalculator() {

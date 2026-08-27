@@ -483,13 +483,624 @@
 #um-gwa-calculator .um-button-secondary { color: var(--um-ink); background: var(--um-white); border-color: var(--um-ink); }
 tr.um-gwa-excluded-row > td { background: #fff8f8 !important; }
 
+/* Reference-inspired performance overview */
+#um-gwa-calculator .um-header h2 {
+  position: relative;
+  display: inline-block;
+}
+
+#um-gwa-calculator .um-title-rays {
+  position: absolute;
+  top: -18px;
+  right: -36px;
+  display: block;
+  width: 38px;
+  height: 38px;
+  animation: um-rays-pop 520ms 1.25s cubic-bezier(0.2, 0.9, 0.25, 1.25) both;
+}
+
+#um-gwa-calculator .um-title-rays b {
+  position: absolute;
+  display: block;
+  width: 6px;
+  height: 17px;
+  background: #ffca38;
+  border-radius: 999px;
+}
+
+#um-gwa-calculator .um-title-rays b:nth-child(1) {
+  top: 0;
+  left: 5px;
+  transform: rotate(8deg);
+}
+
+#um-gwa-calculator .um-title-rays b:nth-child(2) {
+  top: 10px;
+  left: 20px;
+  transform: rotate(45deg);
+}
+
+#um-gwa-calculator .um-title-rays b:nth-child(3) {
+  top: 25px;
+  left: 28px;
+  transform: rotate(90deg);
+}
+
+#um-gwa-calculator .um-creator > div::after {
+  content: "\2726";
+  margin-left: 0.08rem;
+  color: #ffca38;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+#um-gwa-calculator .um-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 2.35fr) minmax(260px, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#um-gwa-calculator .um-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(290px, 1.1fr);
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2rem);
+  min-height: 292px;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+  overflow: hidden;
+  color: var(--um-white);
+  background:
+    radial-gradient(circle at 72% 30%, rgba(85, 155, 255, 0.36), transparent 32%),
+    linear-gradient(135deg, #0848cf 0%, #0868ff 58%, #0758dc 100%);
+  border: 1px solid #4d91ff;
+  border-radius: 30px;
+  box-shadow: 0 9px 18px rgba(8, 104, 255, 0.24);
+}
+
+#um-gwa-calculator .um-hero::before,
+#um-gwa-calculator .um-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+#um-gwa-calculator .um-hero::before {
+  top: -75px;
+  right: -60px;
+  width: 270px;
+  height: 270px;
+}
+
+#um-gwa-calculator .um-hero::after {
+  right: 30%;
+  bottom: -180px;
+  width: 360px;
+  height: 360px;
+}
+
+#um-gwa-calculator .um-hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+#um-gwa-calculator .um-hero-label {
+  color: #eaf2ff;
+  font-size: clamp(0.72rem, 1vw, 0.95rem);
+}
+
+#um-gwa-calculator .um-gwa {
+  margin: 0.28rem 0 0.65rem;
+  color: var(--um-white);
+  font-size: clamp(4.5rem, 8vw, 7rem);
+  text-shadow: 0 4px 12px rgba(0, 35, 110, 0.18);
+}
+
+#um-gwa-calculator .um-formula {
+  color: #eaf2ff;
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+}
+
+#um-gwa-calculator .um-formula b {
+  color: #ffd13f;
+  font-weight: 850;
+}
+
+#um-gwa-calculator .um-number-animating {
+  font-variant-numeric: tabular-nums;
+  text-rendering: optimizeLegibility;
+}
+
+#um-gwa-calculator .um-hero-watermark {
+  position: absolute;
+  bottom: -25px;
+  left: 31%;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 86px);
+  grid-template-rows: repeat(2, 74px);
+  gap: 8px;
+  opacity: 0.085;
+  transform: rotate(-13deg);
+}
+
+#um-gwa-calculator .um-hero-watermark span {
+  display: grid;
+  place-items: center;
+  color: transparent;
+  border: 3px solid var(--um-white);
+  border-radius: 16px;
+  font-size: 3.4rem;
+  font-weight: 900;
+  -webkit-text-stroke: 2px var(--um-white);
+}
+
+#um-gwa-calculator .um-gauge {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  min-width: 0;
+  text-align: center;
+}
+
+#um-gwa-calculator .um-gauge svg {
+  display: block;
+  width: 100%;
+  max-width: 390px;
+  margin: auto;
+  overflow: visible;
+}
+
+#um-gwa-calculator .um-gauge-track,
+#um-gwa-calculator .um-gauge-active {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 18;
+}
+
+#um-gwa-calculator .um-gauge-track {
+  stroke: rgba(226, 237, 255, 0.72);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  animation: um-gauge-track-in 900ms 120ms ease-out both;
+}
+
+#um-gwa-calculator .um-gauge-active {
+  stroke: #ffd13f;
+  stroke-dashoffset: var(--um-gauge-offset);
+  animation: um-gauge-segment-sweep 1450ms 160ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+#um-gwa-calculator .um-gauge-ticks text {
+  fill: #eaf2ff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#um-gwa-calculator .um-gauge-needle {
+  stroke: #ffd13f;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+#um-gwa-calculator .um-gauge-needle-group {
+  transform: rotate(var(--um-gauge-angle));
+  transform-box: view-box;
+  transform-origin: 160px 150px;
+  animation: um-gauge-needle-sweep 1450ms 160ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+#um-gwa-calculator .um-gauge-marker {
+  fill: #ffd13f;
+  filter: drop-shadow(0 2px 3px rgba(0, 35, 100, 0.3));
+}
+
+#um-gwa-calculator .um-gauge-marker-core { fill: var(--um-white); }
+
+#um-gwa-calculator .um-gauge-caption,
+#um-gwa-calculator .um-gauge-value {
+  font-family: inherit;
+  font-weight: 850;
+}
+
+#um-gwa-calculator .um-gauge-caption {
+  fill: #eaf2ff;
+  font-size: 10px;
+}
+
+#um-gwa-calculator .um-gauge-value {
+  fill: #ffd13f;
+  font-size: 23px;
+  animation: um-gauge-value-in 420ms 1.15s ease-out both;
+}
+
+#um-gwa-calculator .um-gauge p {
+  margin: -1.4rem 0 0;
+  color: #dbe8ff;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+#um-gwa-calculator .um-standing-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 292px;
+  padding: 1.5rem;
+  overflow: hidden;
+  text-align: center;
+  background: linear-gradient(145deg, #fbfdff 0%, #f4f8ff 100%);
+  border: 1px solid #e8effb;
+  border-radius: 30px;
+}
+
+#um-gwa-calculator .um-standing-rings,
+#um-gwa-calculator .um-standing-rings::before {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  content: "";
+}
+
+#um-gwa-calculator .um-standing-rings {
+  top: 50%;
+  left: 50%;
+  width: 340px;
+  height: 340px;
+  border: 2px solid rgba(8, 104, 255, 0.045);
+  transform: translate(-50%, -50%);
+}
+
+#um-gwa-calculator .um-standing-rings::before {
+  top: 33px;
+  left: 33px;
+  width: 270px;
+  height: 270px;
+  border: 2px solid rgba(8, 104, 255, 0.15);
+  box-shadow: 0 0 28px rgba(8, 104, 255, 0.035);
+}
+
+#um-gwa-calculator .um-trophy {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 0.8rem;
+  color: var(--um-white);
+  background: var(--um-blue);
+  border-radius: 50%;
+  box-shadow: 0 6px 14px rgba(8, 104, 255, 0.25);
+}
+
+#um-gwa-calculator .um-trophy svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+#um-gwa-calculator .um-trophy > span {
+  position: absolute;
+  right: -5px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--um-white);
+  background: #ffca38;
+  border: 2px solid var(--um-white);
+  border-radius: 50%;
+  font-size: 0.7rem;
+}
+
+#um-gwa-calculator .um-standing-card > span {
+  color: var(--um-ink);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#um-gwa-calculator .um-standing-card > strong {
+  margin: 0.25rem 0 0.65rem;
+  color: var(--um-blue-dark);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+#um-gwa-calculator .um-standing-card > b {
+  min-width: 126px;
+  padding: 0.42rem 0.85rem;
+  color: #695100;
+  background: #ffd13f;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+#um-gwa-calculator .um-standing-card > small {
+  margin-top: 1rem;
+  color: var(--um-slate);
+  font-size: 0.75rem;
+}
+
+#um-gwa-calculator .um-standing-card > i {
+  width: 34px;
+  height: 8px;
+  margin-top: 0.8rem;
+  background: linear-gradient(135deg, transparent 40%, var(--um-blue) 41% 59%, transparent 60%) 0 0 / 12px 12px repeat-x;
+}
+
+#um-gwa-calculator .um-stats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 1.75rem;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(100deg, #f7faff 0%, #eef4ff 100%);
+  border: 1px solid #edf2fa;
+  border-radius: 999px;
+  box-shadow: 0 7px 18px rgba(61, 87, 120, 0.06);
+}
+
+#um-gwa-calculator .um-stat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.85rem;
+  padding: 0.4rem clamp(0.6rem, 2vw, 1.4rem);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+}
+
+#um-gwa-calculator .um-stat:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 12%;
+  right: 0;
+  width: 1px;
+  height: 76%;
+  background: #d5deec;
+}
+
+#um-gwa-calculator .um-stat-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  color: var(--um-white);
+  background: var(--um-blue);
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(8, 104, 255, 0.2);
+}
+
+#um-gwa-calculator .um-stat span.um-stat-icon {
+  display: grid;
+  margin-top: 0;
+  color: var(--um-white);
+}
+
+#um-gwa-calculator .um-stat-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+#um-gwa-calculator .um-stat strong {
+  color: var(--um-ink);
+  font-size: 1.55rem;
+}
+
+#um-gwa-calculator .um-stat span:not(.um-stat-icon) {
+  margin-top: 0.1rem;
+  color: var(--um-slate);
+}
+
+#um-gwa-calculator .um-details {
+  padding: 0 1rem;
+  background: linear-gradient(100deg, #fffdf6, #fff9e9);
+  border: 1px solid #ffe8a8;
+  border-radius: 18px;
+}
+
+#um-gwa-calculator .um-details summary {
+  padding: 0.85rem 0;
+}
+
+#um-gwa-calculator .um-details summary .um-exclusion-heading {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.8rem;
+}
+
+#um-gwa-calculator .um-exclusion-heading > i {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--um-white);
+  background: #ffca38;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(255, 190, 30, 0.25);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 850;
+  font-family: Georgia, serif;
+}
+
+#um-gwa-calculator .um-details summary .um-exclusion-heading > span {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+#um-gwa-calculator .um-exclusion-heading strong {
+  color: var(--um-ink);
+  font-size: 0.85rem;
+}
+
+#um-gwa-calculator .um-details summary .um-exclusion-heading small {
+  margin: 0.12rem 0 0;
+  color: var(--um-muted);
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#um-gwa-calculator .um-details summary b {
+  color: #9b7100;
+}
+
+#um-gwa-calculator .um-details summary b::after {
+  content: "\2304";
+  color: #c89500;
+  font-size: 1.25rem;
+  transform: none;
+}
+
+#um-gwa-calculator .um-details[open] summary b::after { transform: rotate(180deg); }
+
+#um-gwa-calculator .um-footer {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--um-line);
+}
+
+#um-gwa-calculator .um-note {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#um-gwa-calculator .um-note > span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--um-blue);
+  background: var(--um-blue-soft);
+  border-radius: 50%;
+}
+
+#um-gwa-calculator .um-note svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+#um-gwa-calculator .um-note p {
+  margin: 0;
+  color: var(--um-muted);
+  font-size: 0.67rem;
+  line-height: 1.55;
+}
+
+#um-gwa-calculator .um-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-width: 126px;
+  border-radius: 11px;
+}
+
+#um-gwa-calculator .um-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+#um-gwa-calculator .um-button-secondary {
+  color: var(--um-blue);
+  border-color: #b9d2ff;
+}
+
+#um-gwa-calculator .um-button-primary {
+  position: relative;
+  min-width: 150px;
+  box-shadow: 0 5px 12px rgba(8, 104, 255, 0.18);
+}
+
+#um-gwa-calculator .um-button-primary::after {
+  content: "\2726";
+  position: absolute;
+  top: -16px;
+  right: -12px;
+  color: #ffca38;
+  font-size: 1.35rem;
+}
+
+@keyframes um-gauge-track-in {
+  from { stroke-dashoffset: 100; opacity: 0.25; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes um-gauge-segment-sweep {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: var(--um-gauge-offset); }
+}
+
+@keyframes um-gauge-needle-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(var(--um-gauge-angle)); }
+}
+
+@keyframes um-gauge-value-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes um-rays-pop {
+  from { opacity: 0; transform: scale(0.55) rotate(-12deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
 @media (max-width: 700px) {
   #um-gwa-calculator {
     width: calc(100% - 1.5rem);
     margin: 0.75rem;
     border-radius: 18px;
   }
+  #um-gwa-calculator .um-overview { grid-template-columns: 1fr; }
   #um-gwa-calculator .um-hero { grid-template-columns: 1fr; }
+  #um-gwa-calculator .um-gauge { max-width: 420px; margin: auto; }
+  #um-gwa-calculator .um-standing-card { min-height: 260px; }
   #um-gwa-calculator .um-standing {
     padding: 1rem 0 0;
     border-top: 1px solid rgba(20, 23, 29, 0.2);
@@ -508,7 +1119,16 @@ tr.um-gwa-excluded-row > td { background: #fff8f8 !important; }
   #um-gwa-calculator .um-intro { max-width: 200px; font-size: 0.72rem; }
   #um-gwa-calculator .um-creator strong { display: none; }
   #um-gwa-calculator .um-stats { gap: 0.4rem; }
-  #um-gwa-calculator .um-stat { padding: 0.7rem 0.55rem; }
+  #um-gwa-calculator .um-stats { grid-template-columns: 1fr; border-radius: 20px; }
+  #um-gwa-calculator .um-stat { padding: 0.65rem 0.55rem; }
+  #um-gwa-calculator .um-stat:not(:last-child)::after {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+  }
   #um-gwa-calculator .um-stat span { font-size: 0.64rem; }
   #um-gwa-calculator .um-term-list { grid-auto-columns: 82%; }
 }
@@ -516,5 +1136,9 @@ tr.um-gwa-excluded-row > td { background: #fff8f8 !important; }
 @media (prefers-reduced-motion: reduce) {
   #um-gwa-calculator *,
   #um-gwa-calculator *::before,
-  #um-gwa-calculator *::after { scroll-behavior: auto !important; transition: none !important; }
+  #um-gwa-calculator *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }
